@@ -6,11 +6,19 @@ import {
   insertionSort,
   quickSort,
   sleep,
-} from "./SortingVisualizerUtil";
+} from "./Algorithms";
+import { AlgorithmButton } from "../AlgorithmButton/AlgorithmButton";
+import { randomIntFromInterval } from "./SortingVisualizerUtil";
 
-// ... (existing imports and component definition)
+const algorithmFunctions = {
+  bubbleSort,
+  selectionSort,
+  insertionSort,
+  quickSort,
+  // Add more algorithms as needed
+};
 
-const SortingVisualizer: React.FC = () => {
+const SortingVisualizer = () => {
   const [sleepTime, setSleepTime] = useState<number>(20);
   const [highlightedIndices, setHighlightedIndices] = useState<number[]>([]);
   const [arraySize, setArraySize] = useState<number>(20);
@@ -32,55 +40,32 @@ const SortingVisualizer: React.FC = () => {
     setArray(newArray);
   };
 
-  const randomIntFromInterval = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  };
-
   const visualizeSort = async (algorithm: string) => {
     const arrayCopy = [...array];
-
-    switch (algorithm) {
-      case "bubbleSort":
-        await bubbleSort(
-          arrayCopy,
-          setArray,
-          (ms) => sleep(ms * sleepTime),
-          setHighlightedIndices
-        );
-        break;
-
-      case "selectionSort":
-        await selectionSort(
-          arrayCopy,
-          setArray,
-          (ms) => sleep(ms * sleepTime),
-          setHighlightedIndices
-        );
-        break;
-
-      case "insertionSort":
-        await insertionSort(
-          arrayCopy,
-          setArray,
-          (ms) => sleep(ms * sleepTime),
-          setHighlightedIndices
-        );
-        break;
-
-      case "quickSort":
-        await quickSort(
-          arrayCopy,
-          setArray,
-          (ms) => sleep(ms * sleepTime),
-          setHighlightedIndices
-        );
-        break;
-
-      // Add more cases for other sorting algorithms
-
-      default:
-        console.error("Invalid algorithm");
+    const sortFunction =
+      algorithmFunctions[algorithm as keyof typeof algorithmFunctions];
+    if (sortFunction) {
+      await sortFunction(
+        arrayCopy,
+        setArray,
+        (ms) => sleep(ms * sleepTime),
+        setHighlightedIndices
+      );
+    } else {
+      console.error("Invalid algorithm");
     }
+  };
+
+  const renderAlgorithmButtons = () => {
+    const algorithms = Object.keys(algorithmFunctions);
+
+    return algorithms.map((algorithm) => (
+      <AlgorithmButton
+        key={algorithm}
+        algorithm={algorithm}
+        onClick={visualizeSort}
+      />
+    ));
   };
 
   return (
@@ -122,30 +107,7 @@ const SortingVisualizer: React.FC = () => {
         />
       </div>
       <div className="button-container">
-        <button
-          className="btn btn-primary mr-2"
-          onClick={() => visualizeSort("bubbleSort")}
-        >
-          Bubble Sort
-        </button>
-        <button
-          className="btn btn-primary mr-2"
-          onClick={() => visualizeSort("selectionSort")}
-        >
-          Selection Sort
-        </button>
-        <button
-          className="btn btn-primary mr-2"
-          onClick={() => visualizeSort("insertionSort")}
-        >
-          Insertion Sort
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => visualizeSort("quickSort")}
-        >
-          Quick Sort
-        </button>
+        {renderAlgorithmButtons()}
         {/* Add buttons for other sorting algorithms */}
       </div>
     </div>
