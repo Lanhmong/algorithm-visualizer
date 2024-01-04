@@ -8,18 +8,25 @@ import {
   sleep,
 } from "./SortingVisualizerUtil";
 
+// ... (existing imports and component definition)
+
 const SortingVisualizer: React.FC = () => {
-  const [array, setArray] = useState<number[]>([]);
-  const [sleepTime, setSleepTime] = useState<number>(20); // Initial sleep time
+  const [sleepTime, setSleepTime] = useState<number>(20);
   const [highlightedIndices, setHighlightedIndices] = useState<number[]>([]);
+  const [arraySize, setArraySize] = useState<number>(20);
+  const [array, setArray] = useState<number[]>([]);
 
   useEffect(() => {
     generateArray();
   }, []);
 
+  const changeArraySize = () => {
+    generateArray();
+  };
+
   const generateArray = () => {
     const newArray: number[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < arraySize; i++) {
       newArray.push(randomIntFromInterval(5, 500));
     }
     setArray(newArray);
@@ -91,6 +98,20 @@ const SortingVisualizer: React.FC = () => {
         ))}
       </div>
       <div className="form-group">
+        <label htmlFor="arraySize">Array Size: </label>
+        <input
+          type="number"
+          id="arraySize"
+          className="form-control"
+          value={arraySize}
+          onChange={(e) => setArraySize(parseInt(e.target.value))}
+        />
+        <button
+          className="btn btn-primary ml-2"
+          onClick={() => changeArraySize()}
+        >
+          Generate New Array
+        </button>
         <label htmlFor="sleepTime">Sleep Time (ms): </label>
         <input
           type="number"
@@ -101,12 +122,6 @@ const SortingVisualizer: React.FC = () => {
         />
       </div>
       <div className="button-container">
-        <button
-          className="btn btn-primary mr-2"
-          onClick={() => generateArray()}
-        >
-          Generate New Array
-        </button>
         <button
           className="btn btn-primary mr-2"
           onClick={() => visualizeSort("bubbleSort")}
