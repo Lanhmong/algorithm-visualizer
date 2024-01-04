@@ -1,0 +1,22 @@
+/* SortingVisualizer.css */
+.array-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .array-bar {
+    width: 20px;
+    background-color: lightblue;
+    margin-right: 5px;
+  }
+  
+  .highlighted {
+    background-color: yellow; /* or any other color you prefer */
+  }
+  
+  .button-container {
+    margin-top: 20px;
+  }
+  
